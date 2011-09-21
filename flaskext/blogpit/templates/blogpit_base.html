@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>blogpit</title>
+
+	<style>
+		body {
+			font-family	: sans-serif;
+			font-size	: 10pt;
+		}
+
+		#menu {
+			margin		: 0;
+			padding		: 0;
+		}
+		#menu li {
+			list-style	: none;
+			display		: inline;
+		}
+	</style>
+</head>
+<body>
+<h1>blogpit</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% block blogpit_menu %}
+{% endblock %}
+
+
+{% block blogpit_content %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,9 @@
+Flask-blogpit
+=======================
+
+Blogpit reusable blueprint for flask
+
+Requirements
+------------------------
+Naturally you will need flask, and blogpit.
+

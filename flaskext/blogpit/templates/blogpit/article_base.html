@@ -1,0 +1,41 @@
+{% extends "blogpit/base.html" %}
+
+
+{% block blogpit_content %}
+
+{% block blogpit_article %}
+
+	{{article}}
+
+{% endblock blogpit_article %}
+
+
+{% block blogpit_article_comment %}
+{% if form %}
+<div id="blogpit_comment_form">
+	<h1>leave your comment</h1>
+
+	{% if form.errors %}
+	    <ul class="errors">
+	        {% for field_name, field_errors in form.errors.items() if field_errors %}
+	            {% for error in field_errors %}
+	                <li>{{ form[field_name].label }}: {{ error }}</li>
+	            {% endfor %}
+	        {% endfor %}
+	    </ul>
+	{% endif %}
+
+	<form method="POST" action="{{url_for('.blogpit_content', path=blogpit_path) }}">
+		{{ form.hidden_tag() }}
+	<dl>
+		<dt>{{form.name.label}}</dt> <dd>{{form.name()}}</dd>
+		<dt>{{form.content.label}}</dt> <dd>{{form.content()}}</dd>
+
+	</dl>
+		<input type="submit"/>
+	</form>
+</div>
+{% endif %}
+{% endblock %}
+
+{% endblock blogpit_content %}

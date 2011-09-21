@@ -1,0 +1,15 @@
+{% extends "blogpit_base.html" %}
+
+{% block blogpit_menu %}
+{% if blogpit_menu %}
+	<ul id="menu">
+	{% for section in blogpit_menu %}
+	<li><a href="{{ url_for('.blogpit_content', path=section) }}">{{ section }}</a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+{% endblock %}
+
+
+{% block blogpit_content %}
+{% endblock %}
