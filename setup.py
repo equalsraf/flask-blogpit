@@ -21,7 +21,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'Flask'
+        'Flask', 'BeautifulSoup', 'Flask-WTF', 'markdown',
     ],
     classifiers=[
         'Environment :: Web Environment',
