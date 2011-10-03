@@ -78,7 +78,7 @@ class MarkdownContentHandler(ContentHandler):
         if os.path.splitext(path)[1]:
             return content
 
-        md = Markdown( extensions=['meta', 'codehilite', 'fenced_code'],
+        md = Markdown( extensions=['meta', 'codehilite(force_linenos=True)', 'fenced_code'],
 		    safe_mode=True,
 		    )
 
