@@ -138,7 +138,10 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
         """
         Get content
         """
-        return __handler.decode(path, get_article_from_store(path) )
+        raw = get_article_from_store(path)
+        if not raw:
+            return raw
+        return __handler.decode(path, raw)
 
     def get_article_from_store(path):
         """
