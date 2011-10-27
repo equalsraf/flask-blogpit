@@ -19,6 +19,7 @@ from flask import Blueprint, render_template, abort, request, redirect, \
 
 import blogpit
 import mimetypes
+import os
 from BeautifulSoup import BeautifulSoup
 #import forms
 from .forms import CommentForm
@@ -178,20 +179,42 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
 
         """
 
-        if not path or path.endswith('/'):
+        rss = os.path.basename(path) == 'rss'
+
+        # Section
+        if not path or path.endswith('/') or rss:
+
+            if rss:
+                realpath = path
+                path = os.path.dirname(path) + '/'
+
             section_names = sections(path)
             article_names = articles(path)
 
             if not section_names and not article_names:
                 abort(404)
             elif not section_names and len(article_names) == 1:
-                path += article_names[0]
+                if rss:
+                    abort(404)
+                else:
+                    path += article_names[0]
             else:
                 article_names.sort(reverse=True)
                 section_names.sort()
+
+                items = {}
+                for name in article_names:
+                    items[name] = getarticle(os.path.join(path, name))
+
+
+                if rss:
+                    result = render_template('blogpit/rss.xml', articles=items,
+                                                blogpit_path=path)
+                    return current_app.response_class(result, mimetype='application/rss+xml')
+
+
                 return render_template('blogpit/section.html', articles=article_names, 
                                             sections=section_names, blogpit_path=path)
-
 
         data = getarticle(path)
         if not data:
@@ -203,6 +226,7 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
             mimetype = mimetypes.guess_type(path)[0]
             return current_app.response_class(data,mimetype=mimetype,direct_passthrough=False)
 
+        # Article
         if current_app.config.get('BLOGPIT_COMMENTS', False):
             form = CommentForm(request.form)
             if request.method == 'POST' and form.validate():
