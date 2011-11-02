@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+        <title>Blogpit feed</title>
+        <description></description>
+	<link></link>
+	{% for name in article_names %}
+        <item>
+		<title>{{name}}</title>
+		<link>{{ url_for('.blogpit_content', path=blogpit_path+name, _external=True) }}</link>
+		<description>{{articles[name]}}</description>
+	</item>
+	{% endfor %}
+</channel>
+</rss>
+
+

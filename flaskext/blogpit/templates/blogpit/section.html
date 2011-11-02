@@ -7,7 +7,7 @@
 {% if articles %}
 <h1>articles</h1>
 <ul class="article_list">
-{% for article in articles %}
+{% for article in article_names %}
 
 <li><a class="bluelink" href="{{ url_for('.blogpit_content', path=blogpit_path+article) }} ">{{article}}</a></li>
 {% endfor %}

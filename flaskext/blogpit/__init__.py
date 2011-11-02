@@ -208,12 +208,14 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
 
 
                 if rss:
-                    result = render_template('blogpit/rss.xml', articles=items,
+                    result = render_template('blogpit/rss.xml', article_names=article_names,
+                                                articles=items,
                                                 blogpit_path=path)
                     return current_app.response_class(result, mimetype='application/rss+xml')
 
 
-                return render_template('blogpit/section.html', articles=article_names, 
+                return render_template('blogpit/section.html', article_names=article_names,
+                                            articles=items,
                                             sections=section_names, blogpit_path=path)
 
         data = getarticle(path)
