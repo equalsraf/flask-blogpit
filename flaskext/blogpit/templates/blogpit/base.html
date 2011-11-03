@@ -2,7 +2,7 @@
 
 {% block blogpit_menu %}
 {% if blogpit_menu %}
-	<ul id="menu">
+	<ul id="blogpit_menu">
 	{% for section in blogpit_menu %}
 	<li><a href="{{ url_for('.blogpit_content', path=section) }}">{{ section }}</a></li>
 	{% endfor %}
