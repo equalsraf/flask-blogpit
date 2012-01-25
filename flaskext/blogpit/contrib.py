@@ -49,10 +49,14 @@ class MarkdownContentHandler(ContentHandler):
         """
         return [ path for path in pathlist if not os.path.splitext(path)[1]]
 
-    def append_comment_from_form(self, rawdata, form):
+    def append_comment_from_form(self, rawdata, form, data):
         """
-        Escape Markdown text
+        Arguments:
+        + rawdata: is the data as freshly retrieve from the storage
+        + form: is the form received by flask
+        + data: is the article data as retrieved from the cache
 
+        This method:
         1. Prepends the comment author name as a h3.blogpit_comment element
         2. This prevents comments from injecting HTML into a page using Markdown.
         3. Encodes the result as an utf-8 string

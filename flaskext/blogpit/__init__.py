@@ -75,7 +75,7 @@ class ContentHandler(object):
 
         return content.decode('utf-8')
 
-    def append_comment_from_form(self, rawdata, form):
+    def append_comment_from_form(self, rawdata, form, data):
         """
         Given a comment form convert it into some data we safely store away.
         Return a new version to be stored, based on the current rawdata plus
@@ -232,8 +232,8 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
         if current_app.config.get('BLOGPIT_COMMENTS', False):
             form = CommentForm(request.form)
             if request.method == 'POST' and form.validate():
-                data = get_article_from_store(path)
-                newdata = __handler.append_comment_from_form(data, form)
+                rawdata = get_article_from_store(path)
+                newdata = __handler.append_comment_from_form(rawdata, form, data)
                 ok = __blogpit.setarticle(path, newdata )
 
                 if ok:
