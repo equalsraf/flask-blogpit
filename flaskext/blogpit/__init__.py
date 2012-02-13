@@ -17,6 +17,15 @@ from __future__ import absolute_import, division
 from flask import Blueprint, render_template, abort, request, redirect, \
                     url_for, flash, current_app
 
+
+blogpit_comment_msg_template = """%s
+
+Referer: %s
+Remote addr: %s
+Language: %s
+User Agent: %s
+"""
+
 import blogpit
 import mimetypes
 import os
@@ -234,7 +243,15 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
             if request.method == 'POST' and form.validate():
                 rawdata = get_article_from_store(path)
                 newdata = __handler.append_comment_from_form(rawdata, form, data)
-                ok = __blogpit.setarticle(path, newdata )
+
+                remote_addr = request.environ.get('REMOTE_ADDR', 'Uknown source')
+                referer = request.environ.get('REFERER', '')
+                lang = request.environ.get('HTTP_ACCEPT_LANGUAGE', '')
+                agent = request.environ.get('HTTP_USER_AGENT', '')
+
+                msg = blogpit_comment_msg_template % (remote_addr, referer, remote_addr, lang, agent)
+
+                ok = __blogpit.setarticle(path, newdata, msg)
 
                 if ok:
                     flash(u'Thank you for your comment')
