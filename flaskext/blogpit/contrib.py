@@ -6,7 +6,6 @@ Contrib components for blogpit
 
 from __future__ import print_function, unicode_literals
 from __future__ import absolute_import, division
-from markdown.postprocessors import Postprocessor
 from markdown import markdown, Markdown
 from BeautifulSoup import BeautifulSoup
 from . import ContentHandler
@@ -23,12 +22,15 @@ class MarkdownContentHandler(ContentHandler):
     Don't forget to use the |safe template tag to render content.
     """
 
+    def __init__(self):
+        pass
+
     @staticmethod
-    def escape_md(data):
+    def escape_md(rawdata):
         """
         Escape Markdown text, so it won't generate HTML
         """
-        html = markdown(data)
+        html = markdown(rawdata)
         return ''.join(BeautifulSoup(html).findAll(text=True))
 
 
@@ -77,10 +79,17 @@ class MarkdownContentHandler(ContentHandler):
             then the content is not handled at ALL.
         2. Otherwise the content is decode as utf-8 and converted from
             Markdown to HTML
+
+        The returned structure is a dictionary, holding the following keys
+        * content - The html converted content
+        * metadata - The metadata retrieved from the store
+        * raw - The original content as received before parsing
         """
 
         if os.path.splitext(path)[1]:
             return content
+
+        raw = content
 
         md = Markdown( extensions=['meta', 'codehilite', 'fenced_code'],
 		    safe_mode=True,
@@ -88,6 +97,16 @@ class MarkdownContentHandler(ContentHandler):
 
         content = content.decode('utf-8')
         content = md.convert(content)
-        data = {'content' : content, 'metadata' : md.Meta}
+        data = {'content' : content, 'metadata' : md.Meta, 'raw' : raw}
         return data
+
+    def get_raw_data(self, data):
+        """
+        Return a raw version of the given data
+        """
+        if isinstance(data, basestring):
+            return data
+
+        return data.get('raw', '')
+
 

@@ -18,7 +18,7 @@ from flask import Blueprint, render_template, abort, request, redirect, \
                     url_for, flash, current_app
 
 
-blogpit_comment_msg_template = """%s
+BLOGPIT_COMMENT_MSG_TEMPLATE = """%s
 
 Referer: %s
 Remote addr: %s
@@ -107,6 +107,15 @@ class ContentHandler(object):
         content = u'\n<br/>%s<br/>\n%s' % (name_esc, content_esc)
         return rawdata + content.encode('utf-8')
 
+    def get_raw_data(self, data):
+        """
+        Return a raw version of the given data
+
+        In this implementation we store the raw data directly, so this method
+        just returns the same data
+        """
+        return data
+
 
 def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
     """
@@ -152,6 +161,15 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
         if not raw:
             return raw
         return __handler.decode(path, raw)
+
+    def get_article_raw(path):
+        """
+        Get raw version of data
+        """
+
+        data = getarticle(path)
+        return __handler.get_raw_data(data)
+
 
     def get_article_from_store(path):
         """
@@ -249,7 +267,7 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
                 lang = request.environ.get('HTTP_ACCEPT_LANGUAGE', '')
                 agent = request.environ.get('HTTP_USER_AGENT', '')
 
-                msg = blogpit_comment_msg_template % (remote_addr, referer, remote_addr, lang, agent)
+                msg = BLOGPIT_COMMENT_MSG_TEMPLATE % (remote_addr, referer, remote_addr, lang, agent)
 
                 ok = __blogpit.setarticle(path, newdata, msg)
 
@@ -263,6 +281,8 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
         else:
             form = None
 
+        if request.is_xhr and current_app.config.get('SERVE_XHR_RAW', False):
+            return current_app.response_class( get_article_raw(path), mimetype='text/plain', direct_passthrough=False)
 
         return render_template('blogpit/article.html',
                                         article=data, blogpit_path=path,
