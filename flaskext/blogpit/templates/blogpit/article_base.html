@@ -19,7 +19,11 @@
 	    <ul class="errors">
 	        {% for field_name, field_errors in form.errors.items() if field_errors %}
 	            {% for error in field_errors %}
+		    	{% if form[field_name].flags.is_spamtrap %}
+	                <li>{{ error }}</li>
+			{% else %}
 	                <li>{{ form[field_name].label }}: {{ error }}</li>
+			{% endif %}
 	            {% endfor %}
 	        {% endfor %}
 	    </ul>
@@ -35,6 +39,13 @@
 		<input type="submit" value="Submit Comment"/>
 	</form>
 </div>
+
+{% else %}
+
+	{% if spam_found %}
+		<h2>{{spam_found}}</h2>
+	{% endif %}
+
 {% endif %}
 {% endblock %}
 

@@ -255,10 +255,15 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
             mimetype = mimetypes.guess_type(path)[0]
             return current_app.response_class(data,mimetype=mimetype,direct_passthrough=False)
 
+        # If we find spam in comments, we
+        # disable the comment form (see bellow)
+        # This flags is inserted in the template dict
+        spam_found = False
+
         # Article
         if current_app.config.get('BLOGPIT_COMMENTS', False):
             form = CommentForm(request.form)
-            if request.method == 'POST' and form.validate():
+            if form.validate_on_submit():
                 rawdata = get_article_from_store(path)
                 newdata = __handler.append_comment_from_form(rawdata, form, data)
 
@@ -278,7 +283,17 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
                             time, please try again later!', 'error')
 
                 return redirect(url_for('.blogpit_content', path=path))
+
+            for field_name in form.errors:
+                if form[field_name].flags.is_spamtrap:
+                    spam_found = True
+
         else:
+            form = None
+
+        # Disable comment form for spammers
+        if spam_found:
+            spam_found = current_app.config.get('SPAM_MESSAGE','Comments are temporarily disabled, due to flying spamming monkeys' )
             form = None
 
         if request.is_xhr and current_app.config.get('SERVE_XHR_RAW', False):
@@ -286,7 +301,7 @@ def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
 
         return render_template('blogpit/article.html',
                                         article=data, blogpit_path=path,
-                                        form=form)
+                                        form=form, spam_found=spam_found)
 
     return blogpit_blueprint
 
