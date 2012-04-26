@@ -4,7 +4,13 @@
 {% if blogpit_menu %}
 	<ul id="blogpit_menu">
 	{% for section in blogpit_menu %}
-	<li><a href="{{ url_for('.blogpit_content', path=section) }}">{{ section }}</a></li>
+		<li>
+		{% if blogpit_path.startswith( section ) %}
+		<a class="blogpit_menu_current"
+		{% else %}
+		<a
+		{% endif %}
+		 href="{{ url_for('.blogpit_content', path=section) }}">{{ section }}</a></li>
 	{% endfor %}
 	</ul>
 {% endif %}
