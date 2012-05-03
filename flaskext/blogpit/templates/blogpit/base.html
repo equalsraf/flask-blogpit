@@ -5,7 +5,7 @@
 	<ul id="blogpit_menu">
 	{% for section in blogpit_menu %}
 		<li>
-		{% if blogpit_path.startswith( section ) %}
+		{% if blogpit_path and blogpit_path.startswith( section ) %}
 		<a class="blogpit_menu_current"
 		{% else %}
 		<a
