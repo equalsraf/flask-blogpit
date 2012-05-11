@@ -109,4 +109,84 @@ class MarkdownContentHandler(ContentHandler):
 
         return data.get('raw', '')
 
+class DebugPit(object):
+    """A fake blogpit for debugging
+
+    * This works on top of the repository workdir instead of the
+      repository database
+    * For heaven's sake don't use this in production this is just
+      intended to help debugging by avoid the need to commit content
+      to test features
+    """
+
+    def __init__(self, path, branch):
+        self.basepath = os.path.abspath(os.path.dirname(path.rstrip('/')))
+        self.last_version = 0
+
+        if not self.basepath:
+            self.basepath = os.path.abspath('..')
+
+        if not os.path.isdir(self.basepath):
+            raise Exception("Directory does not exist")
+
+    def version(self):
+        """We always return a different version
+           This bypasses the cache and force a read/write from the disk
+        """
+        return unicode(self.last_version)
+
+    def sections(self, path):
+        """Returns all dir names under the basepath"""
+        result = []
+
+        prefix = os.path.join(self.basepath, path)
+        for name in os.listdir(prefix):
+            if name.startswith('.'):
+                continue
+
+            path = os.path.join(prefix, name)
+            if not os.path.isdir(path):
+                continue
+
+            result.append(name+'/')
+        result.sort()
+        return result
+
+    def articles(self, path):
+        """Returns all file names under the basepath"""
+        result = []
+
+        prefix = os.path.join(self.basepath, path)
+        for name in os.listdir(prefix):
+            if name.startswith('.'):
+                continue
+
+            path = os.path.join(prefix, name)
+            if not os.path.isfile(path):
+                continue
+
+            result.append(name)
+        return result
+
+    def getarticle(self, path):
+        """Get file contents"""
+        rpath = os.path.join(self.basepath, path)
+        if not os.path.isfile(rpath):
+            return ''
+
+        f = open(rpath)
+        return f.read()
+
+    def setarticle(self, path, data, msg):
+        """Write data to file"""
+        rpath = os.path.join(self.basepath, path)
+        if not os.path.isfile(rpath):
+            return False
+
+        print(rpath)
+        f = open(rpath, 'w')
+        f.write(data)
+        f.close()
+
+        return True
 

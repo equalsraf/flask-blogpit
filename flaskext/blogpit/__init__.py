@@ -26,7 +26,7 @@ Language: %s
 User Agent: %s
 """
 
-import blogpit
+from blogpit import Blogpit
 import mimetypes
 import os
 from BeautifulSoup import BeautifulSoup
@@ -116,13 +116,26 @@ class ContentHandler(object):
         """
         return data
 
-
-def create_blogpit_blueprint(path, branch, cache, handler, **kwargs):
+def create_blogpit_blueprint(path, branch, cache, handler, use_debugpit, **kwargs):
     """
     Bluepring factory for blogpit
+
+    * path - the repository database path
+    * branch - the repository branch references, e.g. refs/heads/master
+    * cache - a cache object i.e. a SimpleCache or MemcacheCache
+    * handler - a blogpit content hander - or None for a default raw handler
+    * use_debugpit - If True we will load data from a workdir instead of the repo
     """
     __cache = cache
-    __blogpit = blogpit.Blogpit(path, branch)
+
+    if use_debugpit:
+        from .contrib import DebugPit
+        blogpit_cls = DebugPit
+    else:
+        blogpit_cls = Blogpit
+
+    __blogpit = blogpit_cls(path, branch)
+
     if handler:
         __handler = handler
     else:
