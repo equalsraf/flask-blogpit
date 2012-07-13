@@ -1,6 +1,10 @@
 from __future__ import print_function, unicode_literals
 from __future__ import absolute_import, division
-from flaskext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
+try:
+    from flaskext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
+except ImportError:
+    from flask.ext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
+
 from wtforms.validators import StopValidation
 
 class SpamTrap(object):
