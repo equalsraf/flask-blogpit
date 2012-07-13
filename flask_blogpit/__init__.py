@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-flaskext.blogpit
+flask_blogpit
 
 Blogpit storage for markdown
 

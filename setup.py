@@ -15,9 +15,8 @@ setup(
     author_email='raf-ep@gmx.com',
     description='Blogpit blog storage provider',
     long_description=__doc__,
-    packages=['flaskext', 'flaskext.blogpit'],
-    namespace_packages=['flaskext'],
-    package_data={'flaskext':['blogpit/templates/blogpit/*','blogpit/templates/*.html']},
+    packages=['flask_blogpit'],
+    package_data={'flask_blogpit':['templates/blogpit/*','templates/*.html']},
     zip_safe=False,
     platforms='any',
     install_requires=[

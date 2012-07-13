@@ -1,9 +1,6 @@
 from __future__ import print_function, unicode_literals
 from __future__ import absolute_import, division
-try:
-    from flaskext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
-except ImportError:
-    from flask.ext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
+from flask.ext.wtf import Form, TextField, Required, TextAreaField, Length, HiddenField
 
 from wtforms.validators import StopValidation
 
