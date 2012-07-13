@@ -91,9 +91,7 @@ class MarkdownContentHandler(ContentHandler):
 
         raw = content
 
-        md = Markdown( extensions=['meta', 'codehilite', 'fenced_code'],
-		    safe_mode=True,
-		    )
+        md = Markdown( extensions=['meta', 'codehilite', 'fenced_code'])
 
         content = content.decode('utf-8')
         content = md.convert(content)
